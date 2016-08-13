@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
+using MikrotikApi.Protocol;
 
 namespace MikrotikApi
 {
@@ -18,21 +19,21 @@ namespace MikrotikApi
 
     class ResponseDataFactory
     {
-        public static ResponseData createResponseData(Protocol.Response response)
+        public static ResponseData createResponseData(Response response)
         {
             var responseData = new ResponseData();
 
-            foreach (Protocol.Reply reply in response)
+            foreach (ReplySentence reply in response)
             {
                 if (reply.Re)
                 {
                     var responseItem = new ResponseItem();
-                    foreach (Protocol.Word word in reply)
+                    foreach (Word word in reply)
                     {
-                        Protocol.Attribute attribute = word as Protocol.Attribute;
+                        AttributeWord attribute = word as AttributeWord;
                         if (attribute != null)
                         {
-                            responseItem[attribute.Name] = attribute.Value;
+                            responseItem[attribute.Key] = attribute.Value;
                         }
                     }
 
@@ -48,30 +49,30 @@ namespace MikrotikApi
     {
         private TcpClient _tcpClient;
 
-        public Client (string host, int port = 8728)
+        public Client(string host, int port = 8728)
         {
             _tcpClient = new TcpClient(host, port);
         }
 
-        public void Login (string username, string password)
+        public void Login(string username, string password)
         {
-            Protocol.Sentence initLogonMessage = new Protocol.Sentence();
-            initLogonMessage.Add(new Protocol.Command("/login"));
+            Sentence initLogonMessage = new Sentence();
+            initLogonMessage.Add(new CommandWord("/login"));
 
             SendMessage(initLogonMessage);
-            Protocol.Response initLogonResponse = ReceiveResponse();
+            Response initLogonResponse = ReceiveResponse();
 
-            string challenge = ((Protocol.Attribute)initLogonResponse.First()[1]).Value;
+            string challenge = ((AttributeWord)initLogonResponse.First()[1]).Value;
             string response = EncodePassword(password, challenge);
 
-            Protocol.Sentence completeLogonMessage = new Protocol.Sentence();
-            completeLogonMessage.Add(new Protocol.Command("/login"));
-            completeLogonMessage.Add(new Protocol.Attribute("name", username));
-            completeLogonMessage.Add(new Protocol.Attribute("response", response));
+            Sentence completeLogonMessage = new Sentence();
+            completeLogonMessage.Add(new CommandWord("/login"));
+            completeLogonMessage.Add(new AttributeWord("name", username));
+            completeLogonMessage.Add(new AttributeWord("response", response));
 
             SendMessage(completeLogonMessage);
-            Protocol.Response completeLogonResponse = ReceiveResponse();
-            
+            Response completeLogonResponse = ReceiveResponse();
+
             if (!completeLogonResponse.First().Done)
             {
                 throw new Exception("Logon failed");
@@ -80,8 +81,23 @@ namespace MikrotikApi
 
         public ResponseData DoCommand(string command)
         {
-            Protocol.Sentence commandMessage = new Protocol.Sentence();
-            commandMessage.Add(new Protocol.Command(command));
+            Sentence commandMessage = new Sentence();
+            commandMessage.Add(new CommandWord(command));
+            SendMessage(commandMessage);
+
+            return ResponseDataFactory.createResponseData(ReceiveResponse());
+        }
+
+        public ResponseData DoCommand(string command, Dictionary<string, string> attributes)
+        {
+            Sentence commandMessage = new Sentence();
+            commandMessage.Add(new CommandWord(command));
+
+            foreach (KeyValuePair<string, string> attribute in attributes)
+            {
+                commandMessage.Add(new AttributeWord(attribute));
+            }
+
             SendMessage(commandMessage);
 
             return ResponseDataFactory.createResponseData(ReceiveResponse());
@@ -120,18 +136,18 @@ namespace MikrotikApi
             return response;
         }
 
-        private void SendMessage (Protocol.Sentence message)
+        private void SendMessage(Sentence message)
         {
             byte[] buffer = message.Buffer.ToArray();
 
             _tcpClient.GetStream().Write(buffer, 0, buffer.Length);
         }
 
-        private Protocol.Response ReceiveResponse()
+        private Response ReceiveResponse()
         {
-            Protocol.Response response = new Protocol.Response();
+            Response response = new Response();
 
-            while(!response.Valid)
+            while (!response.Valid)
             {
                 response.Add(ReceiveReply());
             }
@@ -139,11 +155,11 @@ namespace MikrotikApi
             return response;
         }
 
-        private Protocol.Reply ReceiveReply()
+        private ReplySentence ReceiveReply()
         {
-            Protocol.Reply reply = new Protocol.Reply();
+            ReplySentence reply = new ReplySentence();
 
-            while(!reply.Valid)
+            while (!reply.Valid)
             {
                 reply.Add(ReceiveWord());
             }
@@ -151,12 +167,12 @@ namespace MikrotikApi
             return reply;
         }
 
-        private Protocol.Word ReceiveWord()
+        private Word ReceiveWord()
         {
             int length = ReceiveLengthPrefix();
             byte[] buffer = new byte[length];
             string data;
-            Protocol.Word word = null;
+            Word word = null;
 
             if (length > 0)
             {
@@ -166,15 +182,16 @@ namespace MikrotikApi
                 if (data[0] == '=')
                 {
                     List<String> pair = data.Substring(1).Split(new char[] { '=' }, 2).ToList();
-                    word = new Protocol.Attribute(pair.First(), pair.Last());
+                    word = new AttributeWord(pair.First(), pair.Last());
                 }
                 else
                 {
-                    word = new Protocol.Word(data);
+                    word = new Word(data);
                 }
-            } else
+            }
+            else
             {
-                word = new Protocol.Word("");
+                word = new Word("");
             }
 
             return word;

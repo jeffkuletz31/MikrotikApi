@@ -6,16 +6,23 @@ using System.Threading.Tasks;
 
 namespace MikrotikApi.Protocol
 {
-    class Attribute : Word
+    class AttributeWord : Word
     {
-        private string _name;
+        private string _key;
         private string _value;
 
-        public Attribute(string name, string value) :
+        public AttributeWord(string name, string value) :
             base("=" + name + "=" + value)
         {
-            _name = name;
+            _key = name;
             _value = value;
+        }
+
+        public AttributeWord(KeyValuePair<string, string> pair) :
+            base("=" + pair.Key + "=" + pair.Value)
+        {
+            _key = pair.Key;
+            _value = pair.Value;
         }
 
         public string Value
@@ -26,11 +33,11 @@ namespace MikrotikApi.Protocol
             }
         }
 
-        public string Name
+        public string Key
         {
             get
             {
-                return _name;
+                return _key;
             }
         }
     }

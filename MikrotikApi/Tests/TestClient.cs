@@ -38,5 +38,13 @@ namespace MikrotikApi.Tests
             var responseData = testClient.DoCommand("/system/package/getall");
             Assert.Pass("DoCommand OK");
         }
+
+        [Test]
+        public void TestDoExport()
+        {
+            testClient.Login("test", "test");
+            var responseData = testClient.DoCommand("/export");
+            Assert.Pass("Config exported OK");
+        }
     }
 }

@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace MikrotikApi.Protocol
 {
-    class Command : Word
+    class CommandWord : Word
     {
-        public Command (List<string> command) : 
+        public CommandWord (List<string> command) : 
             base("/" + String.Join("/", command))
         {
             
         }
 
-        public Command (string command) :
+        public CommandWord (string command) :
             base(command)
         {
 

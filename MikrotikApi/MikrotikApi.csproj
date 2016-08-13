@@ -48,10 +48,10 @@
     <Compile Include="Client.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Protocol\Attribute.cs" />
-    <Compile Include="Protocol\Command.cs" />
-    <Compile Include="Protocol\Query.cs" />
-    <Compile Include="Protocol\Reply.cs" />
+    <Compile Include="Protocol\AttributeWord.cs" />
+    <Compile Include="Protocol\CommandWord.cs" />
+    <Compile Include="Protocol\QueryWord.cs" />
+    <Compile Include="Protocol\ReplySentence.cs" />
     <Compile Include="Protocol\Response.cs" />
     <Compile Include="Protocol\Sentence.cs" />
     <Compile Include="Protocol\Word.cs" />

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MikrotikApi.Protocol
 {
-    class Reply : Sentence
+    class ReplySentence : Sentence
     {
         public bool Valid
         {

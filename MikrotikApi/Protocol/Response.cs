@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace MikrotikApi.Protocol
 {
-    class Response : IList<Reply>
+    class Response : IList<ReplySentence>
     {
-        public List<Reply> replies = new List<Reply>();
+        public List<ReplySentence> replies = new List<ReplySentence>();
 
-        public Reply this[int index]
+        public ReplySentence this[int index]
         {
             get
             {
-                return ((IList<Reply>)replies)[index];
+                return ((IList<ReplySentence>)replies)[index];
             }
 
             set
@@ -28,7 +28,7 @@ namespace MikrotikApi.Protocol
         {
             get
             {
-                return ((IList<Reply>)replies).Count;
+                return ((IList<ReplySentence>)replies).Count;
             }
         }
 
@@ -36,7 +36,7 @@ namespace MikrotikApi.Protocol
         {
             get
             {
-                return ((IList<Reply>)replies).IsReadOnly;
+                return ((IList<ReplySentence>)replies).IsReadOnly;
             }
         }
 
@@ -53,54 +53,54 @@ namespace MikrotikApi.Protocol
             }
         }
 
-        public void Add(Reply item)
+        public void Add(ReplySentence item)
         {
-            ((IList<Reply>)replies).Add(item);
+            ((IList<ReplySentence>)replies).Add(item);
         }
 
         public void Clear()
         {
-            ((IList<Reply>)replies).Clear();
+            ((IList<ReplySentence>)replies).Clear();
         }
 
-        public bool Contains(Reply item)
+        public bool Contains(ReplySentence item)
         {
-            return ((IList<Reply>)replies).Contains(item);
+            return ((IList<ReplySentence>)replies).Contains(item);
         }
 
-        public void CopyTo(Reply[] array, int arrayIndex)
+        public void CopyTo(ReplySentence[] array, int arrayIndex)
         {
-            ((IList<Reply>)replies).CopyTo(array, arrayIndex);
+            ((IList<ReplySentence>)replies).CopyTo(array, arrayIndex);
         }
 
-        public IEnumerator<Reply> GetEnumerator()
+        public IEnumerator<ReplySentence> GetEnumerator()
         {
-            return ((IList<Reply>)replies).GetEnumerator();
+            return ((IList<ReplySentence>)replies).GetEnumerator();
         }
 
-        public int IndexOf(Reply item)
+        public int IndexOf(ReplySentence item)
         {
-            return ((IList<Reply>)replies).IndexOf(item);
+            return ((IList<ReplySentence>)replies).IndexOf(item);
         }
 
-        public void Insert(int index, Reply item)
+        public void Insert(int index, ReplySentence item)
         {
-            ((IList<Reply>)replies).Insert(index, item);
+            ((IList<ReplySentence>)replies).Insert(index, item);
         }
 
-        public bool Remove(Reply item)
+        public bool Remove(ReplySentence item)
         {
-            return ((IList<Reply>)replies).Remove(item);
+            return ((IList<ReplySentence>)replies).Remove(item);
         }
 
         public void RemoveAt(int index)
         {
-            ((IList<Reply>)replies).RemoveAt(index);
+            ((IList<ReplySentence>)replies).RemoveAt(index);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IList<Reply>)replies).GetEnumerator();
+            return ((IList<ReplySentence>)replies).GetEnumerator();
         }
     }
 }
