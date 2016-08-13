@@ -44,14 +44,12 @@ namespace MikrotikApi.Protocol
         {
             get
             {
-                bool valid = false;
-
                 if (this.Count > 0)
                 {
-                    valid = Reply.IsDone(this.Last());
+                    return this.Last().Done;
                 }
 
-                return valid;
+                return false;
             }
         }
 

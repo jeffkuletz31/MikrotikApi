@@ -10,7 +10,6 @@ namespace MikrotikApi.Protocol
     class Word
     {
         private string _word;
-        private List<byte> _buffer;
         internal static Word Done = new Word("!done");
         internal static Word Trap = new Word("!trap");
         internal static Word Re = new Word("!re");

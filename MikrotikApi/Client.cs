@@ -24,7 +24,7 @@ namespace MikrotikApi
 
             foreach (Protocol.Reply reply in response)
             {
-                if (Protocol.Reply.IsRe(reply))
+                if (reply.Re)
                 {
                     var responseItem = new ResponseItem();
                     foreach (Protocol.Word word in reply)
@@ -44,7 +44,7 @@ namespace MikrotikApi
         }
     }
 
-    public class Client
+    public sealed class Client : IDisposable
     {
         private TcpClient _tcpClient;
 
@@ -72,7 +72,7 @@ namespace MikrotikApi
             SendMessage(completeLogonMessage);
             Protocol.Response completeLogonResponse = ReceiveResponse();
             
-            if (!Protocol.Reply.IsDone(completeLogonResponse.First()))
+            if (!completeLogonResponse.First().Done)
             {
                 throw new Exception("Logon failed");
             }
@@ -221,6 +221,11 @@ namespace MikrotikApi
             }
 
             return l;
+        }
+
+        public void Dispose()
+        {
+            ((IDisposable)_tcpClient).Dispose();
         }
     }
 }

@@ -21,30 +21,30 @@ namespace MikrotikApi.Protocol
             }
         }
 
-        internal static bool IsDone(Reply reply)
+        public bool Done
         {
-            if (reply.Valid)
+            get
             {
-                if (reply.First().Equals(Word.Done))
+                if (this.Valid)
                 {
-                    return true;
+                    return this.First().Equals(Word.Done);
                 }
-            }
 
-            return false;
+                return false;
+            }
         }
 
-        internal static bool IsRe(Reply reply)
+        public bool Re
         {
-            if (reply.Valid)
+            get
             {
-                if (reply.First().Equals(Word.Re))
+                if (this.Valid)
                 {
-                    return true;
+                    return this.First().Equals(Word.Re);
                 }
-            }
 
-            return false;
+                return false;
+            }
         }
     }
 }
