@@ -44,6 +44,13 @@ namespace MikrotikApi.Protocol
             }
         }
 
+        public static explicit operator Sentence(List<Word> v)
+        {
+            Sentence sentence = new Sentence();
+            v.ForEach(w => sentence.Add(w));
+            return sentence;
+        }
+
         public bool IsReadOnly
         {
             get

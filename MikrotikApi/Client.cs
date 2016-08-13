@@ -103,6 +103,13 @@ namespace MikrotikApi
             return ResponseDataFactory.createResponseData(ReceiveResponse());
         }
 
+        public ResponseData DoCommand(CommandBuilder builder)
+        {
+            SendMessage(builder.Sentence);
+
+            return ResponseDataFactory.createResponseData(ReceiveResponse());
+        }
+
         internal void Close()
         {
             _tcpClient.Close();

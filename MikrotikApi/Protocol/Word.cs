@@ -2,14 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace MikrotikApi.Protocol
 {
-
-    class Word
+    internal class Word
     {
-        private string _word;
         internal static Word Done = new Word("!done");
         internal static Word Trap = new Word("!trap");
         internal static Word Re = new Word("!re");
@@ -19,39 +16,39 @@ namespace MikrotikApi.Protocol
         {
             get
             {
-                List<byte> word = Encoding.ASCII.GetBytes(_word).ToList();
-                List<byte> lengthPrefix = EncodeLengthPrefix((UInt32)_word.Length);
+                var word = Encoding.ASCII.GetBytes(String).ToList();
+                var lengthPrefix = EncodeLengthPrefix((uint)String.Length);
 
                 return lengthPrefix.Concat(word).ToArray();
             }
         }
 
-        public string String
+        public string String { get; }
+
+        public bool Empty => String.Length == 0;
+
+        public override bool Equals(object other)
         {
-            get
+            var word = other as Word;
+            if (word != null)
             {
-                return _word;
+                return String == word.String;
             }
+
+            return false;
         }
 
-        public bool Empty { 
-            get
-            {
-                return this._word.Length == 0;
-            }
-        }
-
-        internal bool Equals(Word other)
+        public override int GetHashCode()
         {
-            return this.String == other.String;
+            return base.GetHashCode();
         }
 
-        private static List<byte> EncodeLengthPrefix(UInt32 length)
+        private static IEnumerable<byte> EncodeLengthPrefix(uint length)
         {
-            int len = 0;
-            UInt64 val = 0;
+            var len = 0;
+            ulong val = 0;
 
-            if (length >= 0 && length <= 0x7F)
+            if (length <= 0x7F)
             {
                 len = 1;
                 val = length;
@@ -74,7 +71,7 @@ namespace MikrotikApi.Protocol
             else if (length >= 0x10000000)
             {
                 len = 5;
-                val = (UInt64)length | 0xF000000000;
+                val = (ulong)length | 0xF000000000;
             }
 
             return BitConverter.GetBytes(val).Take(len).ToList();
@@ -82,7 +79,7 @@ namespace MikrotikApi.Protocol
 
         public Word (string word)
         {
-            _word = word;
+            String = word;
         }
     }
 }
